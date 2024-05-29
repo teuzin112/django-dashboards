@@ -126,6 +126,7 @@ e adicionar metodo __str__ para ver no admin
 
 -- meta de exec_valores é uma meta do banco ou somente um campo char ?
 
--- quando o empregado muda de cargo, o cargo do contrato que muda ou cria-se um novo contrato ?
+-- quando o empregado muda de cargo, o contrato é alterado ou cria-se um novo contrato ?
 
 -- codigo do convenio é unico ?
+-- matricula do cracha e cpf seria bom deixar como unico tambem ?
