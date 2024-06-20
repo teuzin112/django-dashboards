@@ -18,12 +18,25 @@ services:
   db:
     container_name: postgres_db
     image: postgres
+    ports:
+      - 5433:5432
     volumes:
       - ./data/db:/var/lib/postgresql/data:rw
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+    - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+    - PGADMIN_DEFAULT_PASSWORD=admin
+    - PGADMIN_LISTEN_PORT=8001
+    ports:
+      - 8001:8001
+    depends_on:
+      - db
 
   nginx:
     container_name: nginx_django
