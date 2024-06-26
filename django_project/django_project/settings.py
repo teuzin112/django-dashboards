@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'base.apps.BaseConfig',
+    'legacy'
 ]
 
 MIDDLEWARE = [
@@ -87,9 +88,18 @@ DATABASES = {
         'PASSWORD': 'postgres',
         'HOST': 'db',
         'PORT': 5432,
+    },
+    'dashboards_old': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': '179.106.231.33',
+        'PORT': 5432
     }
 }
 
+DATABASE_ROUTERS = ['legacy.db_router.LegacyRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
