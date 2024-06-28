@@ -80,6 +80,7 @@ class Atividade(models.Model):
     peso = models.IntegerField(choices=PESOS, null=True, blank=True)
     data_inicio = models.DateField()
     data_final = models.DateField()
+    indicador = models.CharField(max_length=20000, null=True, blank=True)
 
     def __str__(self):
         if self.meta:
@@ -139,6 +140,7 @@ class Empregado(models.Model):
     genero = models.CharField(choices=GENEROS, max_length=255)
     telefone = models.CharField(max_length=255, null=True, blank=True)
     graduacao = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"{self.nome}"

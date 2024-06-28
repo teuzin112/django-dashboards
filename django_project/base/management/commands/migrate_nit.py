@@ -1,17 +1,15 @@
 from django.core.management.base import BaseCommand
-from legacy.models import (AtvMetas as LegacyAtvMetas, AndAtividades as LegacyAndAtividades, AtvIndicadores as LegacyAtvIndicadores, 
-                           Employees as LegacyEmployees, Eventos as LegacyEventos, ExecFinanceira as LegacyExecFinanceira, 
-                           ExecValores as LegacyExecValores)
-from base.models import Convenio, Meta, Atividade, Andamento, Empregado, Cargo, Cargo_Empregado, Evento, Exec_Financeira, Exec_Valores, Convenio_Empregado, Contrato
+from legacy.models import (AtvMetasNit, AndAtividadesNit, FpsNit, EmployeesNit, EventosNit, ExecFinanceiraNit, ExecValoresNit, UsersNit)
+from base.models import Convenio, Meta, Atividade, Andamento, Empregado, Cargo, Cargo_Empregado, Evento, Exec_Financeira, Exec_Valores, Convenio_Empregado, Fp_nit, Contrato
 from datetime import datetime
 
 class Command(BaseCommand):
     help = 'Migrate data from legacy database to new database'
 
     def handle(self, *args, **kwargs):
-        self.migrate_atv_metas()
-        self.migrate_atv_indicadores()
-        self.migrate_and_atividades()
+        self.migrate_atv_metas_nit()
+        self.migrate_fps_nit()
+        self.migrate_and_atividades_nit()
         self.migrate_employees()
         self.migrate_eventos()
         self.migrate_execfinanceira()
@@ -26,11 +24,11 @@ class Command(BaseCommand):
             # Se a data estiver em um formato inesperado, retorne None ou lidere de outra forma
             return None
 
-    def migrate_atv_metas(self):
-        legacy_data = LegacyAtvMetas.objects.using('dashboards_old').all()
+    def migrate_atv_metas_nit(self):
+        legacy_data = AtvMetasNit.objects.using('dash_nit').all()
         for item in legacy_data:
             convenio, created = Convenio.objects.get_or_create(
-                nome=item.convenio,
+                nome='NIT',
                 defaults={
                     'codigo': '000',
                     'data_inicio': '2022-01-01',
@@ -53,11 +51,11 @@ class Command(BaseCommand):
                 data_final=self.convert_date_format(item.end_date)
             )
 
-    def migrate_atv_indicadores(self):
-        legacy_data = LegacyAtvIndicadores.objects.using('dashboards_old').all()
+    def migrate_fps_nit(self):
+        legacy_data = FpsNit.objects.using('dash_nit').all()
         for item in legacy_data:
             convenio, created = Convenio.objects.get_or_create(
-                nome=item.convenio,
+                nome='NIT',
                 defaults={
                     'codigo': '000',
                     'data_inicio': '2022-01-01',
@@ -73,22 +71,31 @@ class Command(BaseCommand):
                     'data_final': self.convert_date_format(item.end_date)
                 }
             )
+
+            fp, created = Fp_nit.objecs.get_or_create(
+                nome=item.fpname,
+                meta=meta,
+                defaults={
+                    'descricao': '',
+                    'data_inicio': self.convert_date_format(item.begin_date),
+                    'data_final': self.convert_date_format(item.end_date)
+                }
+            )
             
             atividade, created = Atividade.objects.get_or_create(
-                meta=meta,
+                fp_nit=fp,
                 nome=item.atividade,
                 defaults={
-                    'indicador':item.indicador,
                     'data_inicio':self.convert_date_format(item.begin_date),
                     'data_final':self.convert_date_format(item.end_date)
                 }
             )
 
-    def migrate_and_atividades(self):
-        legacy_data = LegacyAndAtividades.objects.using('dashboards_old').all()
+    def migrate_and_atividades_nit(self):
+        legacy_data = AndAtividadesNit.objects.using('dash_nit').all()
         for item in legacy_data:
             atividade, created = Atividade.objects.get_or_create(
-                nome=item.atividade,
+                nome=item.fpatv,
                 defaults={
                     'descricao': item.descricao,
                     'link_img': item.link_img,
@@ -104,7 +111,7 @@ class Command(BaseCommand):
             )
 
     def migrate_employees(self):
-        legacy_data = LegacyEmployees.objects.using('dashboards_old').all()
+        legacy_data = EmployeesNit.objects.using('dash_nit').all()
         for item in legacy_data:
             empregado, created = Empregado.objects.get_or_create(
                 matricula_cracha=item.username,
@@ -141,12 +148,12 @@ class Command(BaseCommand):
             Convenio_Empregado.objects.create(
                 convenio=item.convenio,
                 empregado=empregado,
-                atuacao_empregado=item.atuacao,
+                atuacao_empregado=item.atuacao_nit,
                 data_inicio_atuacao=item.data_contratacao
             )
 
     def migrate_eventos(self):
-        legacy_data = LegacyEventos.objects.using('dashboards_old').all()
+        legacy_data = EventosNit.objects.using('dash_nit').all()
         for item in legacy_data:
             convenio, created = Convenio.objects.get_or_create(
                 nome=item.convenio,
@@ -169,7 +176,7 @@ class Command(BaseCommand):
             )
 
     def migrate_execfinanceira(self):
-        legacy_data = LegacyExecFinanceira.objects.using('dashboards_old').all()
+        legacy_data = ExecFinanceiraNit.objects.using('dash_nit').all()
         for item in legacy_data:
             convenio, created = Convenio.objects.get_or_create(
                 nome=item.convenio,
@@ -193,7 +200,7 @@ class Command(BaseCommand):
             )
 
     def migrate_execvalores(self):
-        legacy_data = LegacyExecValores.objects.using('dashboards_old').all()
+        legacy_data = ExecValoresNit.objects.using('dash_nit').all()
         for item in legacy_data:
             convenio, created = Convenio.objects.get_or_create(
                 nome=item.convenio,
