@@ -1,5 +1,5 @@
 
-# Django Project
+# Django Dashboards
 
 ## Pré-requisitos
 
