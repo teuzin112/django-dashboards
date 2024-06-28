@@ -6,8 +6,6 @@ services:
     volumes:
       - static:/static
       - ./django_project:/app
-    env_file:
-      - .env
     build:
       context: .
     ports:

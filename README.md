@@ -53,8 +53,8 @@
 1. **Clonar o Repositório**
 
    ```bash
-   git clone seu_repositorio_url
-   cd seu_repositorio
+   git clone https://github.com/teuzin112/django-dashboards.git
+   cd django-dashboards
    ```
 
 2. **Iniciar os Contêineres Docker**
